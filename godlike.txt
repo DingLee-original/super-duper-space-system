@@ -1,0 +1,600 @@
+it kind of great
+
+program 1 >
+
+from keras.models import Sequential
+from keras.layers import Dense, Activation
+import numpy as np
+import pandas as pd
+from sklearn import datasets
+iris = datasets.load_iris()
+X, y = datasets.load_iris(return_X_y = True)
+from sklearn.model_selection import train_test_split
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.40)
+# Define the network model and its arguments.
+# Set the number of neurons/nodes for each layer:
+model = Sequential()
+model.add(Dense(2, input_shape=(4,)))
+model.add(Activation('sigmoid'))
+model.add(Dense(1))
+model.add(Activation('sigmoid'))
+model.add(Dense(2, input_shape=(4,)))
+model.add(Activation('sigmoid'))
+model.add(Dense(1))
+model.add(Activation('sigmoid'))
+model.add(Dense(2, input_shape=(4,)))
+model.add(Activation('sigmoid'))
+model.add(Dense(1))
+model.add(Activation('sigmoid'))
+#sgd = SGD(lr=0.0001, decay=1e-6, momentum=0.9, nesterov=True)
+#model.compile(loss='categorical_crossentropy', optimizer=sgd, metrics=['accuracy'])
+# Compile the model and calculate its accuracy:
+model.compile(loss='mean_squared_error', optimizer='sgd', metrics=['accuracy'])
+#model.fit(X_train, y_train, batch_size=32, epochs=3)
+# Print a summary of the Keras model:
+model.summary()
+#model.fit(X_train, y_train)
+#model.fit(X_train, y_train, batch_size=32, epochs=300)
+model.fit(X_train, y_train, epochs=5)
+score = model.evaluate(X_test, y_test)
+print(score)
+
+program 2 >
+
+import tensorflow as tf
+from tensorflow import keras
+from keras.models import Sequential
+from keras import Input
+from keras.layers import Dense
+import pandas as pd
+import numpy as np
+import sklearn
+from sklearn.metrics import classification_report
+import matplotlib
+import matplotlib.pyplot as plt
+# Load digits data
+(X_train, y_train), (X_test, y_test) = keras.datasets.mnist.load_data()
+# Print shapes
+print("Shape of X_train: ", X_train.shape)
+print("Shape of y_train: ", y_train.shape)
+print("Shape of X_test: ", X_test.shape)
+print("Shape of y_test: ", y_test.shape)
+# Display images of the first 10 digits in the training set and their true lables
+fig, axs = plt.subplots(2, 5, sharey=False, tight_layout=True, figsize=(12,6),facecolor='white')
+n=0
+for i in range(0,2):
+	for j in range(0,5):
+		axs[i,j].matshow(X_train[n])
+		axs[i,j].set(title=y_train[n])
+		n=n+1
+plt.show()
+# Reshape and normalize (divide by 255) input data
+X_train = X_train.reshape(60000, 784).astype("float32") / 255
+X_test = X_test.reshape(10000, 784).astype("float32") / 255
+# Print shapes
+print("New shape of X_train: ", X_train.shape)
+print("New shape of X_test: ", X_test.shape)
+#Design the Deep FF Neural Network architecture
+model = Sequential(name="DFF-Model") # Model
+model.add(Input(shape=(784,), name='Input-Layer'))
+ # Input Layer - need to specify the shape of inputsR-2
+model.add(Dense(128, activation='relu', name='Hidden-Layer-1',
+kernel_initializer='HeNormal'))
+model.add(Dense(64, activation='relu', name='Hidden-Layer-2',
+kernel_initializer='HeNormal'))
+model.add(Dense(32, activation='relu', name='Hidden-Layer-3',
+kernel_initializer='HeNormal'))
+model.add(Dense(10, activation='softmax', name='Output-Layer'))
+
+model.compile(optimizer='adam', loss='SparseCategoricalCrossentropy', metrics=['Accuracy'])
+model.fit(X_train,y_train,batch_size=10,epochs=5,verbose='auto',callbacks=None)
+#apply the trained model to make predictions
+# Predict class labels on training data
+pred_labels_tr = np.array(tf.math.argmax(model.predict(X_train),axis=1))
+# Predict class labels on a test data
+pred_labels_te = np.array(tf.math.argmax(model.predict(X_test),axis=1))
+#Model Performance Summary
+print("")
+print(' Model Summary ')
+model.summary()
+print("")
+# Printing the parameters:Deep Feed Forward Neural Network contains more than 100K
+#print(' Weights and Biases
+#for layer in model_d1.layers:
+#print("Layer: ", layer.name) # print layer name
+#print(" --Kernels (Weights): ", layer.get_weights()[0]) # kernels (weights)
+#print(" --Biases: ", layer.get_weights()[1]) # biases
+print("")
+print('---------- Evaluation on Training Data -----------')
+print(classification_report(y_train, pred_labels_tr))
+print("")
+print('---------- Evaluation on Test Data -----------')
+print(classification_report(y_test, pred_labels_te))
+print("")
+
+
+program 3
+
+# Batch-Normalization and padding
+import keras
+from keras.datasets import fashion_mnist
+from keras.layers import Dense, Activation, Flatten, Conv2D, MaxPooling2D,BatchNormalization
+from keras.models import Sequential
+from keras.utils import to_categorical
+import numpy as np
+import matplotlib.pyplot as plt
+(train_X,train_Y), (test_X,test_Y) = fashion_mnist.load_data()
+train_X = train_X.reshape(-1, 28,28, 1)
+test_X = test_X.reshape(-1, 28,28, 1)
+train_X = train_X.astype('float32')
+test_X = test_X.astype('float32')
+train_X = train_X / 255
+test_X = test_X / 255
+train_Y_one_hot = to_categorical(train_Y)
+test_Y_one_hot = to_categorical(test_Y)
+model = Sequential()
+model.add(Conv2D(256, (3,3), input_shape=(28, 28, 1),padding='same'))
+model.add(Activation('relu'))
+BatchNormalization()
+model.add(MaxPooling2D(pool_size=(2,2) ,padding='same'))
+model.add(Conv2D(128, (3,3),padding='same'))
+model.add(Activation('relu'))
+#BatchNormalization()
+model.add(MaxPooling2D(pool_size=(2,2) ,padding='same'))
+model.add(Conv2D(64, (3,3), input_shape=(28, 28, 1),padding='same'))
+model.add(Activation('relu'))
+#BatchNormalization()
+model.add(MaxPooling2D(pool_size=(2,2),padding='same'))
+model.add(Conv2D(28, (3,3)))
+model.add(Activation('relu'))
+#BatchNormalization()
+model.add(MaxPooling2D(pool_size=(2,2),padding='same'))
+model.add(Flatten())
+model.add(Dense(64))
+model.add(Dense(10))
+model.add(Activation('softmax'))
+model.compile(loss=keras.losses.categorical_crossentropy,
+optimizer=keras.optimizers.Adam(),metrics=['accuracy'])
+model.fit(train_X, train_Y_one_hot, batch_size=64, epochs=5)
+test_loss, test_acc = model.evaluate(test_X, test_Y_one_hot)
+print('Test loss', test_loss)
+print('Test accuracy', test_acc)
+predictions = model.predict(test_X)
+print(np.argmax(np.round(predictions[0])))
+plt.imshow(test_X[0].reshape(28, 28), cmap = plt.cm.binary)
+plt.show()
+
+program 4
+
+import numpy as np
+Import matplotlib.pyplot as plt
+from keras.datasets import fashion_mnist
+from keras.models import Sequential 
+from keras.layer import Conv2D, Ma pooling2D,Flatten,Dense, Activation,Dropout
+from keras.utils import to_categorical
+from keras import regularizers
+
+#Load and preprocess the data 
+(train_X, train_Y),(test_X,test_Y) = fashion_mnist.load_data()
+train_X = train_X.reshape(-1, 28, 28).astype('float32')/255.0
+test_X = test_X.reshape(-1,28,28,1).astype('float32')/255.0
+
+
+#One-hot encode the labels
+train_Y_one_hot = to_categorical(train_Y, 10)
+test_Y_one_hot = to_categorical(test_Y,10)
+
+#Set L2 regularization strength
+l2_strength = 0.001
+
+#Build the model
+model = Sequential()
+
+#1st Conv Layer
+model.add(Conv2D(32,(3,3),padding = 'same', input_shape = (28,28,1),kernel_regularizer = regularizer.12(12_strength))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size = (2,2)))
+
+#2nd Conv Layer
+model.add(Conv2D(64,(3,3),padding = 'same',kernel_regularizer = regularizer.12(12_strength))
+model.add(Activation('relu'))
+model.add(MaxPooling2D(pool_size = (2,2)))
+
+#3rd Conv Layer
+model.add(Conv2D(128,(3,3),padding = 'same',kernel_regularizer = regularizer.12(12_strength))
+model.add(Activation('relu'))
+
+#4th Conv Layer
+model.add(Conv2D(128,(3,3),padding = 'same',kernel_regularizer = regularizer.12(12_strength))
+model.add(Activation('relu'))
+
+#Flatten + Dense 
+model.add(Flatten())
+model.add(Dense(128,activation = 'relu', kernal_regularizer = regularizers.12(12_strength)))
+model.add(Dropout(0.5))
+model.add(Dense(10, activation= 'softmax'))
+
+#Compile model
+model.compile(optimize = 'adam',loss = 'categorical_crossentropy',metrics = ['accuracy'])
+
+#Train model
+model.fit(train_X , train_Y_one_hot , epochs = 10, batch_size = 64 , validation_split = 0.1)
+
+#Evaluate 
+test_loss, test_acc = model.evaluate(test_X, test_Y_one_hot)
+print("Test Loss:" , test_loss)
+print("Test Accuracy:", test_acc)
+
+#Predict and visualize
+predictions = model.predict(test_X)
+labels = ['T-shit/top', 'Trouser', 'Pullover', 'Dress', 'Coat', 'Sandal', 'Sneaker', 'Bag', 'Ankel boot']
+predicted_class = np.argmax(predictions[0])
+print(f"Predicted label: {predicted_class}( {labels[predicted_class]})")
+
+plt.imshow(test_X[0].reshape(28,28), camp = 'gray')
+plt.title(f"Predicted: {labels[predicted_class]}")
+plt.axis('off')
+plt.show()
+
+
+program 5
+
+import torch
+from transformers import BlipProcessor, BlipForConditionalGeneration
+from PIL import Image
+import requests
+import matplotlib.pyplot as plt
+#image_url = "https://storage.googleapis.com/sfr-vision-languageresearch/BLIP/demo.jpg"
+
+image_url ="https://t4.ftcdn.net/jpg/01/67/29/67/360_F_167296790_tR1y8W6Gm7O7hKYPdByHVWwSRgKCzIFi.jpg"
+
+image = Image.open(requests.get(image_url, stream=True).raw).convert("RGB")
+# Display the image
+plt.imshow(image)
+plt.axis('off')
+plt.title("Input Image")
+plt.show()
+# Load BLIP processor and model
+processor = BlipProcessor.from_pretrained("Salesforce/blip-image-captioning-base")
+model = BlipForConditionalGeneration.from_pretrained("Salesforce/blip-imagecaptioning-base")
+# Preprocess the image
+inputs = processor(images=image, return_tensors="pt")
+# Generate caption
+with torch.no_grad():
+ caption_ids = model.generate(**inputs)
+ caption = processor.decode(caption_ids[0], skip_special_tokens=True)
+print("Generated Caption:")
+print(caption)
+
+program 6
+
+# Importing necessary libraries
+import numpy as np
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, Bidirectional, LSTM, Dense, Dropout
+from tensorflow.keras.optimizers import Adam
+np.random.seed(42)
+# Load the IMDB dataset
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=10000) 
+# Padding the sequences to have the same length (max length = 500)
+max_len = 500
+x_train = pad_sequences(x_train, maxlen=max_len)
+x_test = pad_sequences(x_test, maxlen=max_len)
+# Building the Bidirectional LSTM model
+model = Sequential()
+# Embedding layer to convert word indices into dense vectors
+model.add(Embedding(input_dim=10000, output_dim=128, input_length=max_len))
+# Bidirectional LSTM layer
+model.add(Bidirectional(LSTM(128, return_sequences=False)))
+# Dropout layer to prevent overfitting
+model.add(Dropout(0.5))
+# Fully connected output layer with a sigmoid activation function for binary classification
+model.add(Dense(1, activation='sigmoid'))
+# Compile the model
+model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+# Summary of the model
+model.summary()
+# Train the model
+history = model.fit(x_train, y_train, epochs=5, batch_size=64, validation_data=(x_test,
+y_test))
+# Evaluate the model
+test_loss, test_acc = model.evaluate(x_test, y_test)
+print(f"Test accuracy: {test_acc * 100:.2f}%")
+# Example prediction on test data
+sample_index = 100 # Random test sample
+prediction = model.predict(np.array([x_test[sample_index]]))
+print(f"Prediction for sample {sample_index}: {'Positive' if prediction > 0.5 else
+'Negative'}")
+
+
+program 7
+import numpy as np
+import matplotlib.pyplot as plt
+import tensorflow as tf
+from tensorflow.keras import layers, models
+# Load MNIST dataset
+(x_train, _), (x_test, _) = tf.keras.datasets.mnist.load_data()
+# Normalize to [0,1] and reshape to (batch_size, 28, 28, 1)
+x_train = x_train.astype('float32') / 255.
+x_test = x_test.astype('float32') / 255.
+x_train = np.reshape(x_train, (len(x_train), 28, 28, 1))
+x_test = np.reshape(x_test, (len(x_test), 28, 28, 1))
+# Define the autoencoder architecture
+input_img = layers.Input(shape=(28, 28, 1))
+# Encoder
+x = layers.Conv2D(16, (3, 3), activation='relu', padding='same')(input_img)
+x = layers.MaxPooling2D((2, 2), padding='same')(x)
+x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(x)
+encoded = layers.MaxPooling2D((2, 2), padding='same')(x) # Output shape: (7, 7, 8)
+# Decoder
+x = layers.Conv2D(8, (3, 3), activation='relu', padding='same')(encoded)
+x = layers.UpSampling2D((2, 2))(x)
+x = layers.Conv2D(16, (3, 3), activation='relu', padding='same')(x)
+x = layers.UpSampling2D((2, 2))(x)
+decoded = layers.Conv2D(1, (3, 3), activation='sigmoid', padding='same')(x)
+# Define the autoencoder model
+autoencoder = models.Model(input_img, decoded)
+autoencoder.compile(optimizer='adam', loss='binary_crossentropy')
+# Train the autoencoder
+autoencoder.fit(x_train, x_train,
+	epochs=10,
+	batch_size=128,
+	shuffle=True,
+	validation_data=(x_test, x_test))
+
+# Reconstruct test images
+decoded_imgs = autoencoder.predict(x_test)
+# Display original and reconstructed images
+n = 10 # Number of images to display
+plt.figure(figsize=(20, 4))
+for i in range(n):
+ # Original image
+	ax = plt.subplot(2, n, i + 1)
+	plt.imshow(x_test[i].reshape(28, 28), cmap='gray')
+	plt.title("Original")
+	plt.axis('off')
+	# Reconstructed image
+	ax = plt.subplot(2, n, i + 1 + n)
+	plt.imshow(decoded_imgs[i].reshape(28, 28), cmap='gray')
+	plt.title("Reconstructed")
+	plt.axis('off')
+
+plt.tight_layout()
+plt.show()
+
+program8
+
+import torch
+import torch.nn as nn
+import torch.optim as optim
+from torchvision import datasets, transforms
+from torch.utils.data import DataLoader
+import matplotlib.pyplot as plt
+import numpy as np
+import torchvision
+# Device configuration
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+# Hyperparameters
+latent_size = 64
+hidden_size = 256
+image_size = 784 # 28x28
+batch_size = 100
+num_epochs = 10
+learning_rate = 0.0002
+transform = transforms.Compose([
+transforms.ToTensor(),
+transforms.Normalize((0.5,), (0.5,)) # Scale to [-1, 1]
+])
+mnist = datasets.MNIST(root='data/', train=True,transform=transform, download=True)
+data_loader = DataLoader(dataset=mnist, batch_size=batch_size,shuffle=True)
+
+class Generator(nn.Module):
+	def __init__(self):
+		super(Generator, self).__init__()
+		self.model = nn.Sequential(
+			nn.Linear(latent_size, hidden_size),
+			nn.LeakyReLU(0.2),
+			nn.Linear(hidden_size, hidden_size),
+			nn.LeakyReLU(0.2),
+			nn.Linear(hidden_size, image_size),
+			nn.Tanh() )
+	def forward(self, z):
+		return self.model(z)
+
+class Discriminator(nn.Module):
+	def __init__(self):
+		super(Discriminator, self).__init__()
+		self.model = nn.Sequential(
+			nn.Linear(image_size, hidden_size),
+			nn.LeakyReLU(0.2),
+			nn.Linear(hidden_size, hidden_size),
+			nn.LeakyReLU(0.2),
+			nn.Linear(hidden_size, 1),
+			nn.Sigmoid()
+			)
+	def forward(self, x):
+		return self.model(x)
+
+G = Generator().to(device)
+D = Discriminator().to(device)
+# Loss and optimizers
+criterion = nn.BCELoss()
+d_optimizer = optim.Adam(D.parameters(), lr=learning_rate)
+g_optimizer = optim.Adam(G.parameters(), lr=learning_rate)
+
+def denorm(x):
+	out = (x + 1) / 2
+	return out.clamp(0, 1)
+
+def show_images(fake_images):
+	fake_images = fake_images.reshape(-1, 1, 28, 28)
+	grid = torchvision.utils.make_grid(fake_images, nrow=10,normalize=True)
+	plt.figure(figsize=(10, 4))
+	plt.imshow(np.transpose(grid.cpu(), (1, 2, 0)))
+	plt.axis('off')
+	plt.show()
+
+for epoch in range(num_epochs):
+	for i, (images, _) in enumerate(data_loader):
+		batch_size_curr = images.size(0)
+		images = images.reshape(batch_size_curr, -1).to(device)
+		# Labels
+		real_labels = torch.ones(batch_size_curr, 1).to(device)
+		fake_labels = torch.zeros(batch_size_curr, 1).to(device)
+# =======================
+# Train Discriminator
+# =======================
+		outputs = D(images)
+		d_loss_real = criterion(outputs, real_labels)
+		real_score = outputs
+		z = torch.randn(batch_size_curr, latent_size).to(device)
+		fake_images = G(z)
+		outputs = D(fake_images.detach())
+		d_loss_fake = criterion(outputs, fake_labels)
+		fake_score = outputs
+		d_loss = d_loss_real + d_loss_fake
+		D.zero_grad()
+		d_loss.backward()
+		d_optimizer.step()
+# =======================
+# Train Generator
+# =======================
+		z = torch.randn(batch_size_curr, latent_size).to(device)
+		fake_images = G(z)
+		outputs = D(fake_images)
+		g_loss = criterion(outputs, real_labels) # Trick discriminator
+		G.zero_grad()
+		g_loss.backward()
+		g_optimizer.step()
+
+print(f"Epoch [{epoch+1}/{num_epochs}], d_loss:
+{d_loss.item():.4f}, g_loss: {g_loss.item():.4f}")
+
+if (epoch + 1) % 10 == 0:
+	with torch.no_grad():
+		z = torch.randn(100, latent_size).to(device)
+		fake_images = G(z)
+		show_images(fake_images)
+
+print("Training completed.")
+
+
+
+program 9
+from google.colab.patches import cv2_imshow
+import cv2
+import numpy as np
+from IPython.display import display, HTML
+import time
+from PIL import Image
+import io
+import base64
+# Load the cascade for face detection
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
+
+html = """
+<video width="640" height="480" autoplay></video>
+<button onclick="captureImage()">Capture Image</button>
+<script>
+ let video = document.querySelector('video');
+ navigator.mediaDevices.getUserMedia({ video: true })
+ .then(function(stream) {
+ video.srcObject = stream;
+ });
+function captureImage() {
+ let canvas = document.createElement('canvas');
+ canvas.width = 640;
+ canvas.height = 480;
+ let context = canvas.getContext('2d');
+ context.drawImage(video, 0, 0, 640, 480);
+ let dataURL = canvas.toDataURL('image/jpeg');
+ google.colab.kernel.invokeFunction('notebook.capture_webcam_image', [dataURL], {});
+ }
+</script>
+"""
+
+display(HTML(html))
+
+imcompleate
+
+
+
+program 10
+
+import tensorflow as tf
+from tensorflow.keras.datasets import imdb
+from tensorflow.keras.preprocessing.sequence import pad_sequences
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Embedding, SimpleRNN, Dense
+# --------------------------
+# 1. Load and Preprocess Data
+# --------------------------
+vocab_size = 10000
+maxlen = 500
+embedding_dim = 32
+# Load dataset
+(x_train, y_train), (x_test, y_test) = imdb.load_data(num_words=vocab_size)
+# Pad sequences to uniform length
+x_train = pad_sequences(x_train, maxlen=maxlen)
+x_test = pad_sequences(x_test, maxlen=maxlen)
+# --------------------------
+# 2. Build RNN Model
+# --------------------------
+model = Sequential([
+	Embedding(input_dim=vocab_size, output_dim=embedding_dim, input_length=maxlen),
+	SimpleRNN(64),
+	Dense(1, activation='sigmoid')
+])
+# Compile model
+model.compile(optimizer='adam', loss='binary_crossentropy', metrics=['accuracy'])
+# Model summary
+model.summary()
+
+model.fit(x_train, y_train, epochs=5, batch_size=64, validation_split=0.2)
+# Evaluate
+loss, acc = model.evaluate(x_test, y_test)
+print(f"Test Accuracy: {acc * 100:.2f}%")
+# --------------------------
+# 4. Predict a New Sample
+# --------------------------
+# Get word index
+word_index = imdb.get_word_index()
+word_index = {k: (v + 3) for k, v in word_index.items()} # Shift indices for reserved tokens
+word_index["<PAD>"] = 0
+word_index["<START>"] = 1
+word_index["<UNK>"] = 2
+word_index["<UNUSED>"] = 3
+
+def encode_review(text):
+	tokens = text.lower().split()
+	encoded = [1] # <START>
+	for word in tokens:
+		encoded.append(word_index.get(word, 2)) # 2 = <UNK>
+	return encoded
+
+# Preprocess and pad
+def preprocess_input(text, maxlen=500):
+	encoded = encode_review(text)
+	padded = pad_sequences([encoded], maxlen=maxlen)
+	return padded
+
+# Sample review
+sample_review = "This movie was fantastic! The story was compelling and the acting was great."
+
+# Preprocess and predict
+processed_review = preprocess_input(sample_review, maxlen)
+prediction = model.predict(processed_review)
+
+# Interpret result
+sentiment = "Positive 😀" if prediction[0][0] > 0.5 else "Negative 😞"
+print(f"\nSample review: {sample_review}")
+print(f"Predicted Sentiment: {sentiment} ({prediction[0][0]:.4f})")
+
+program 11
+
+
+sml 
+
+deleted 
